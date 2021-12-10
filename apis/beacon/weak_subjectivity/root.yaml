@@ -1,0 +1,57 @@
+get:
+  operationId: "getWeakSubjectivityStateRoot"
+  summary: "Get state root of weak subjectivity checkpoint"
+  description: "Retrieves state root of the weak subjectivity checkpoint. If an epoch is provided, it returns the WS
+                state root for that epoch, otherwise it returns the most suitable WS state root. It always returns the
+                epoch that corresponds to the returned root."
+
+  tags:
+    - Beacon
+  parameters:
+    - name: epoch
+      in: query
+      required: false
+      schema:
+        allOf:
+          - $ref: "../../../beacon-node-oapi.yaml#/components/schemas/Uint64"
+          - example: ""
+
+  responses:
+    "200":
+      description: Success
+      content:
+        application/json:
+          schema:
+            title: GetWeakSubjectivityStateRootResponse
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                   ws_checkpoint:
+                    $ref: '../../../beacon-node-oapi.yaml#/components/schemas/Checkpoint'
+
+    "400":
+      description: "Invalid epoch"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../../../beacon-node-oapi.yaml#/components/schemas/ErrorMessage"
+              - example:
+                  code: 400
+                  message: "Invalid epoch"
+
+    "404":
+      description: "Checkpoint not found"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../../../beacon-node-oapi.yaml#/components/schemas/ErrorMessage"
+              - example:
+                 code: 404
+                 message: "Checkpoint not found"
+
+    "500":
+      $ref: "../../../beacon-node-oapi.yaml#/components/responses/InternalError"

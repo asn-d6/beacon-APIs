@@ -1,0 +1,47 @@
+get:
+  operationId: "getWeakSubjectivityState"
+  summary: "Get weak subjectivity beacon state."
+  description: Retrieves `BeaconState` SSZ object for a given state root.
+  tags:
+    - Beacon
+  parameters:
+    - name: state_root
+      in: query
+      required: true
+      schema:
+        allOf:
+          - $ref: "../../../beacon-node-oapi.yaml#/components/schemas/Root"
+          - example: ""
+
+  responses:
+    "200":
+      description: Success
+      content:
+        application/octet-stream:
+          schema:
+            description: "SSZ serialized `BeaconState` bytes."
+
+    "400":
+      description: "Invalid state root"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../../../beacon-node-oapi.yaml#/components/schemas/ErrorMessage"
+              - example:
+                  code: 400
+                  message: "Invalid state root"
+
+    "404":
+      description: "State root not found"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../../../beacon-node-oapi.yaml#/components/schemas/ErrorMessage"
+              - example:
+                  code: 404
+                  message: "State root not found"
+
+    "500":
+      $ref: "../../../beacon-node-oapi.yaml#/components/responses/InternalError"
